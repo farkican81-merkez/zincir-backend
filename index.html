@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Ver</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#070c14;font-family:sans-serif;color:#dde5f0;min-height:100vh}
+.header{background:#0d1520;border-bottom:1px solid #1a2d42;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px}
+.logo-text{font-weight:900;font-size:22px;color:#fff;letter-spacing:-0.5px}
+.logo-text span{color:#f97316}
+.btn-new{padding:8px 16px;background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;font-weight:800;font-size:13px;border:none;border-radius:8px;cursor:pointer}
+.container{max-width:680px;margin:0 auto;padding:24px 16px}
+.hero{text-align:center;margin-bottom:28px;padding:20px 0}
+.hero-icon{font-size:48px;margin-bottom:16px}
+.hero h1{font-size:28px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.2}
+.hero h1 span{color:#f97316}
+.hero p{font-size:15px;color:#8ba0b5;margin-bottom:0;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat{background:#111e2e;border:1px solid #1a2d42;border-radius:12px;padding:13px 14px;text-align:center}
+.stat-label{color:#4a6580;font-size:11px;margin-bottom:4px}
+.stat-val{font-weight:800;font-size:15px}
+.campaigns{display:flex;flex-direction:column;gap:14px}
+.card{background:#111e2e;border:1px solid #1a2d42;border-radius:16px;padding:22px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.card-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#ea580c,#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.card-name{font-weight:700;color:#dde5f0;font-size:14px}
+.verified{background:rgba(249,115,22,0.15);color:#f97316;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid rgba(249,115,22,0.3);margin-left:6px}
+.hospital{color:#4a6580;font-size:12px;margin-top:2px}
+.days{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.days-urgent{background:#450a0a;color:#fca5a5}
+.days-ok{background:#0a2818;color:#6ee7b7}
+.card-title{font-weight:700;font-size:16px;color:#dde5f0;margin-bottom:6px}
+.card-desc{color:#8ba0b5;font-size:13px;line-height:1.55;margin-bottom:16px}
+.card-stats{display:flex;gap:8px;margin-bottom:12px}
+.cs{flex:1;background:#0d1520;border-radius:10px;padding:10px 12px;border:1px solid #1a2d42}
+.cs-label{color:#4a6580;font-size:10px;margin-bottom:3px}
+.cs-val{font-weight:800;font-size:14px}
+.progress-wrap{margin-bottom:12px}
+.progress-top{display:flex;justify-content:space-between;margin-bottom:5px}
+.progress-bar{height:6px;background:#1a2d42;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px}
+.chain-box{display:flex;align-items:center;justify-content:space-between;background:rgba(59,130,246,0.05);border-radius:10px;padding:9px 13px;border:1px solid rgba(59,130,246,0.12);margin-bottom:14px}
+.chain-label{color:#4a6580;font-size:10px;margin-bottom:5px}
+.chain-nodes{display:flex;align-items:center;gap:3px}
+.chain-node{border-radius:50%}
+.card-btns{display:flex;gap:8px}
+.btn-donate{flex:2;padding:11px 0;background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;font-weight:800;font-size:14px;border:none;border-radius:10px;cursor:pointer}
+.btn-share{flex:1;padding:11px 0;background:rgba(59,130,246,0.1);color:#3b82f6;font-weight:700;font-size:13px;border:1px solid rgba(59,130,246,0.25);border-radius:10px;cursor:pointer}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#111e2e;border:1px solid #1a2d42;border-radius:20px;padding:26px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal-title{font-weight:800;font-size:18px;color:#dde5f0;margin-bottom:4px}
+.modal-sub{color:#4a6580;font-size:13px;margin-bottom:18px}
+.amounts{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.amt-btn{padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;border:1px solid #1a2d42;background:#0d1520;color:#8ba0b5}
+.amt-btn.active{background:rgba(249,115,22,0.15);color:#f97316;border-color:#f97316}
+.split-box{background:#0d1520;border-radius:12px;padding:14px;border:1px solid #1a2d42;margin-bottom:14px}
+.split-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}
+.split-divider{height:1px;background:#1a2d42;margin:8px 0}
+.split-total{display:flex;justify-content:space-between;font-weight:700}
+.escrow-note{background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#8ba0b5;line-height:1.6}
+.btn-pay{width:100%;padding:13px 0;background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;font-weight:800;font-size:15px;border:none;border-radius:10px;cursor:pointer}
+.btn-close{background:none;border:none;color:#4a6580;font-size:20px;cursor:pointer;float:right}
+.success-box{text-align:center}
+.ref-box{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px;margin-bottom:18px}
+.ref-link{background:#0d1520;border-radius:8px;padding:8px 12px;font-family:monospace;font-size:12px;color:#3b82f6;word-break:break-all;margin-top:8px}
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111e2e;border:1px solid #f97316;border-radius:12px;padding:12px 20px;color:#dde5f0;font-size:13px;font-weight:600;z-index:200;white-space:nowrap}
+.toast.show{display:block}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-wrap">
+    <svg class="logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 22c0 0 2-8 10-8s10 4 10 4" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+      <path d="M8 22c2 4 6 6 10 6s8-2 10-6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+      <path d="M19 14c0 0-3-6 3-8" stroke="#f97316" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="24" cy="10" rx="5" ry="4" fill="#f97316" opacity="0.85"/>
+      <ellipse cx="15" cy="22" rx="7" ry="5" fill="#3b82f6" opacity="0.85"/>
+      <circle cx="29" cy="8" r="1.5" fill="#f97316" opacity="0.6"/>
+      <circle cx="10" cy="18" r="1.5" fill="#3b82f6" opacity="0.6"/>
+    </svg>
+    <span class="logo-text">el <span>ver</span></span>
+  </div>
+  <button class="btn-new" onclick="openNew()">+ Kampanya Ac</button>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-icon">🤲</div>
+    <h1>Bugün sen bir <span>el</span> ol.</h1>
+    <p>Belki de birine lazımsın.<br>10 liranla birinin hayatına dokunuyorsun.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">TOPLAM BAGIS</div><div class="stat-val" style="color:#f97316" id="totalRaised">₺25.290</div></div>
+    <div class="stat"><div class="stat-label">HAYATINA DOKUNULAN</div><div class="stat-val" style="color:#3b82f6" id="totalDonors">2.524</div></div>
+    <div class="stat"><div class="stat-label">AKTIF KAMPANYA</div><div class="stat-val" style="color:#a78bfa" id="activeCamp">3</div></div>
+  </div>
+
+  <div class="campaigns" id="campaigns"></div>
+</div>
+
+<div class="modal-bg" id="donateModal">
+  <div class="modal">
+    <button class="btn-close" onclick="closeModal('donateModal')">x</button>
+    <div id="donateContent"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="shareModal">
+  <div class="modal">
+    <button class="btn-close" onclick="closeModal('shareModal')">x</button>
+    <div class="modal-title">Hayatına Dokun 🤲</div>
+    <div class="modal-sub">Bu linki paylaşırsan sen de bir el oluyorsun.</div>
+    <div class="ref-link" id="shareLink"></div>
+    <br>
+    <button class="btn-pay" onclick="copyLink()">Linki Kopyala</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const campaigns = [
+  {id:1,name:"Mehmet Yilmaz",title:"Diz ameliyati faturasi",desc:"Is kazasi sonucu acil diz ameliyati. Sigorta kapsamiyor.",target:15000,raised:9840,donors:984,chain:6,hospital:"Medipol Hastanesi",avatar:"MY",verified:true,days:4},
+  {id:2,name:"Ayse Kara",title:"Kemoterapi 2. tur",desc:"Meme kanseri teshisi konuldu. Maddi olarak tukendim.",target:28000,raised:11200,donors:1120,chain:4,hospital:"Acibadem Kadikoy",avatar:"AK",verified:true,days:11},
+  {id:3,name:"Kemal Demir",title:"Kalp kapagi ameliyati",desc:"Acil kalp kapagi ameliyati gerekiyor. Emekli maasum yetmiyor.",target:42000,raised:4200,donors:420,chain:2,hospital:"Kartal Egitim Arastirma",avatar:"KD",verified:false,days:18}
+];
+let selectedAmount=10;
+let currentCampaign=null;
+
+function fmt(n){return '₺'+n.toLocaleString('tr-TR');}
+
+function chainNodes(d){
+  let h='';const n=Math.min(d,8);
+  for(let i=0;i<n;i++){
+    const s=i===0?11:8;const c=i===0?'#f97316':'#3b82f6';const op=0.35+(i/n)*0.65;
+    h+=`<div class="chain-node" style="width:${s}px;height:${s}px;background:${c};opacity:${op}"></div>`;
+    if(i<n-1)h+=`<div style="width:8px;height:1.5px;background:#1a2d42"></div>`;
+  }
+  return h;
+}
+
+function renderCampaigns(){
+  const el=document.getElementById('campaigns');
+  el.innerHTML=campaigns.map(c=>{
+    const pct=Math.round(c.raised/c.target*100);
+    const barColor=pct>=80?'#f97316':pct>=40?'#3b82f6':'#f59e0b';
+    return `<div class="card">
+      <div class="card-header">
+        <div class="avatar">${c.avatar}</div>
+        <div style="flex:1">
+          <div><span class="card-name">${c.name}</span>${c.verified?'<span class="verified">Belge Onaylı</span>':''}</div>
+          <div class="hospital">${c.hospital}</div>
+        </div>
+        <div class="days ${c.days<=5?'days-urgent':'days-ok'}">${c.days}g kaldi</div>
+      </div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-stats">
+        <div class="cs"><div class="cs-label">TOPLANAN</div><div class="cs-val" style="color:#f97316">${fmt(c.raised)}</div></div>
+        <div class="cs"><div class="cs-label">KALAN</div><div class="cs-val" style="color:#f59e0b">${fmt(c.target-c.raised)}</div></div>
+        <div class="cs"><div class="cs-label">EL UZATAN</div><div class="cs-val" style="color:#3b82f6">${c.donors.toLocaleString('tr-TR')}</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-top"><span style="color:#8ba0b5;font-size:12px">Hedef: ${fmt(c.target)}</span><strong style="color:#dde5f0;font-size:13px">%${pct}</strong></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${barColor}88,${barColor})"></div></div>
+      </div>
+      <div class="chain-box">
+        <div><div class="chain-label">UZANAN ELLER</div><div class="chain-nodes">${chainNodes(c.chain)}</div></div>
+        <div style="text-align:right"><div style="color:#3b82f6;font-weight:700;font-size:13px">${c.chain}. el uzandı</div><div style="color:#4a6580;font-size:11px">zincir büyüyor</div></div>
+      </div>
+      <div class="card-btns">
+        <button class="btn-donate" onclick="openDonate(${c.id})">🤲 Bir El Uzat</button>
+        <button class="btn-share" onclick="openShare(${c.id})">Hayatına Dokun</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDonate(id){
+  currentCampaign=campaigns.find(c=>c.id===id);
+  selectedAmount=10;
+  renderDonate();
+  document.getElementById('donateModal').classList.add('open');
+}
+
+function renderDonate(){
+  const c=currentCampaign;
+  document.getElementById('donateContent').innerHTML=`
+    <div class="modal-title">🤲 Bir El Uzat</div>
+    <div class="modal-sub">${c.name} — ${c.title}</div>
+    <div class="amounts">
+      ${[5,10,25,50,100].map(a=>`<button class="amt-btn ${selectedAmount===a?'active':''}" onclick="setAmount(${a})">${a} ₺</button>`).join('')}
+    </div>
+    <div class="split-box">
+      <div class="split-row"><span style="color:#8ba0b5">${c.name} icin</span><span style="color:#f97316;font-weight:700">${(selectedAmount*0.95).toFixed(2)} ₺</span></div>
+      <div class="split-divider"></div>
+      <div class="split-total"><span>Toplam</span><span>${selectedAmount.toFixed(2)} ₺</span></div>
+    </div>
+    <div class="escrow-note">🔒 Paran doğrudan ${c.name} icin bekletilir. Hedef tutara ulaşınca kendisine aktarılır. Sen sadece bir el uzatıyorsun.</div>
+    <button class="btn-pay" onclick="completeDonate()">Elimi Uzatıyorum</button>
+  `;
+}
+
+function setAmount(a){selectedAmount=a;renderDonate();}
+
+function completeDonate(){
+  const c=currentCampaign;
+  const share=+(selectedAmount*0.95).toFixed(2);
+  c.raised=Math.min(c.raised+share,c.target);
+  c.donors+=1;c.chain+=1;
+  updateStats();renderCampaigns();
+  document.getElementById('donateContent').innerHTML=`
+    <div class="success-box">
+      <div style="font-size:52px;margin-bottom:10px">🤲</div>
+      <div class="modal-title" style="margin-bottom:8px">Elini uzattın!</div>
+      <p style="color:#8ba0b5;font-size:13px;margin-bottom:8px;line-height:1.65">Yaptığın iyiliği unut.<br>O asla unutmayacak.</p>
+      <div class="ref-box" style="margin-top:16px">
+        <div style="color:#4a6580;font-size:12px;margin-bottom:4px">Bir el de sen uzat — paylaş:</div>
+        <div class="ref-link">elver.app/k/${c.id}?ref=${Math.random().toString(36).substring(2,8).toUpperCase()}</div>
+      </div>
+      <button class="btn-pay" onclick="closeModal('donateModal')">Kapat</button>
+    </div>
+  `;
+}
+
+function openShare(id){
+  const c=campaigns.find(x=>x.id===id);
+  document.getElementById('shareLink').textContent='elver.app/k/'+c.id+'?ref=DEMO123';
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function copyLink(){showToast('Link kopyalandı! Bir el de sen uzat.');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openNew(){showToast('Yakında aktif olacak!');}
+
+function updateStats(){
+  const tr=campaigns.reduce((a,c)=>a+c.raised,0);
+  const td=campaigns.reduce((a,c)=>a+c.donors,0);
+  document.getElementById('totalRaised').textContent=fmt(tr);
+  document.getElementById('totalDonors').textContent=td.toLocaleString('tr-TR');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+renderCampaigns();
+</script>
+</body>
+</html>
