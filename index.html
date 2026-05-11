@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ulaş.</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f0f;font-family:sans-serif;color:#dde5f0;min-height:100vh}
+.header{background:#161616;border-bottom:1px solid #2a2a2a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-svg{width:40px;height:40px}
+.logo-text{font-weight:900;font-size:24px;color:#1a1a2e;letter-spacing:-0.5px;color:#fff}
+.logo-text span{color:#c0392b}
+.btn-new{padding:8px 18px;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-weight:800;font-size:13px;border:none;border-radius:8px;cursor:pointer}
+.container{max-width:680px;margin:0 auto;padding:24px 16px}
+.hero{text-align:center;margin-bottom:28px;padding:28px 0}
+.hero h1{font-size:30px;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.2}
+.hero h1 span{color:#c0392b}
+.hero p{font-size:16px;color:#8ba0b5;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:13px 14px;text-align:center}
+.stat-label{color:#555;font-size:11px;margin-bottom:4px}
+.stat-val{font-weight:800;font-size:15px}
+.campaigns{display:flex;flex-direction:column;gap:14px}
+.card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;padding:22px;position:relative;overflow:hidden}
+.card-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#c0392b,#2c3e50);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.card-name{font-weight:700;color:#dde5f0;font-size:14px}
+.verified{background:rgba(192,57,43,0.15);color:#e74c3c;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid rgba(192,57,43,0.3);margin-left:6px}
+.hospital{color:#555;font-size:12px;margin-top:2px}
+.days-urgent{background:#3d0000;color:#ff8a80;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.days-ok{background:#003d1a;color:#69f0ae;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.card-title{font-weight:700;font-size:16px;color:#fff;margin-bottom:6px}
+.card-desc{color:#8ba0b5;font-size:13px;line-height:1.55;margin-bottom:16px}
+.card-stats{display:flex;gap:8px;margin-bottom:12px}
+.cs{flex:1;background:#111;border-radius:10px;padding:10px 12px;border:1px solid #2a2a2a}
+.cs-label{color:#555;font-size:10px;margin-bottom:3px}
+.cs-val{font-weight:800;font-size:14px}
+.progress-wrap{margin-bottom:12px}
+.progress-top{display:flex;justify-content:space-between;margin-bottom:5px}
+.progress-bar{height:6px;background:#2a2a2a;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px}
+.chain-box{display:flex;align-items:center;justify-content:space-between;background:rgba(192,57,43,0.05);border-radius:10px;padding:9px 13px;border:1px solid rgba(192,57,43,0.15);margin-bottom:14px}
+.chain-nodes{display:flex;align-items:center;gap:3px}
+.chain-node{border-radius:50%}
+.card-btns{display:flex;gap:8px}
+.btn-donate{flex:2;padding:11px 0;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-weight:800;font-size:14px;border:none;border-radius:10px;cursor:pointer}
+.btn-share{flex:1;padding:11px 0;background:rgba(44,62,80,0.5);color:#8ba0b5;font-weight:700;font-size:13px;border:1px solid #2a2a2a;border-radius:10px;cursor:pointer}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:20px;padding:26px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal-title{font-weight:800;font-size:18px;color:#fff;margin-bottom:4px}
+.modal-sub{color:#555;font-size:13px;margin-bottom:18px}
+.amounts{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.amt-btn{padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;border:1px solid #2a2a2a;background:#111;color:#8ba0b5}
+.amt-btn.active{background:rgba(192,57,43,0.15);color:#e74c3c;border-color:#c0392b}
+.split-box{background:#111;border-radius:12px;padding:14px;border:1px solid #2a2a2a;margin-bottom:14px}
+.split-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}
+.split-divider{height:1px;background:#2a2a2a;margin:8px 0}
+.split-total{display:flex;justify-content:space-between;font-weight:700}
+.escrow-note{background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#8ba0b5;line-height:1.6}
+.btn-pay{width:100%;padding:13px 0;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-weight:800;font-size:15px;border:none;border-radius:10px;cursor:pointer}
+.btn-close{background:none;border:none;color:#555;font-size:20px;cursor:pointer;float:right}
+.ref-box{background:rgba(44,62,80,0.3);border:1px solid #2a2a2a;border-radius:12px;padding:14px;margin-bottom:18px}
+.ref-link{background:#111;border-radius:8px;padding:8px 12px;font-family:monospace;font-size:12px;color:#8ba0b5;word-break:break-all;margin-top:8px}
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #c0392b;border-radius:12px;padding:12px 20px;color:#fff;font-size:13px;font-weight:600;z-index:200;white-space:nowrap}
+.toast.show{display:block}
+.new-form input,.new-form textarea{width:100%;padding:10px 14px;background:#111;border:1px solid #2a2a2a;border-radius:10px;color:#fff;font-size:13px;outline:none;margin-bottom:10px;box-sizing:border-box;font-family:inherit}
+.new-form textarea{resize:vertical;rows:3}
+.new-form label{color:#555;font-size:12px;display:block;margin-bottom:4px}
+.file-upload{width:100%;padding:14px;background:#111;border:2px dashed #2a2a2a;border-radius:10px;color:#555;font-size:13px;text-align:center;cursor:pointer;margin-bottom:10px;box-sizing:border-box}
+.inceleme-note{background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#8ba0b5;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-wrap">
+    <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 6 C14 6 8 11 8 17 C8 20 10 23 13 25" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M20 6 C26 6 32 11 32 17 C32 20 30 23 27 25" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="20" cy="14" r="3" fill="#c0392b" opacity="0.7"/>
+      <path d="M15 26 C15 26 17 22 20 22 C23 22 25 24 26 26 L28 32 C28 33 27 34 26 34 L14 34 C13 34 12 33 12 32 Z" fill="#2c3e50"/>
+      <path d="M20 22 L22 18 L25 20 L23 24" fill="#2c3e50" opacity="0.8"/>
+      <path d="M25 20 L28 19 L29 22 L26 23" fill="#2c3e50" opacity="0.6"/>
+    </svg>
+    <span class="logo-text">ulaş<span>.</span></span>
+  </div>
+  <button class="btn-new" onclick="openNew()">+ Kampanya Aç</button>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <h1>Bugün sen bir <span>el</span> ol.</h1>
+    <p>Birinin hayatına dokun.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">TOPLAM BAĞIŞ</div><div class="stat-val" style="color:#e74c3c" id="totalRaised">₺25.290</div></div>
+    <div class="stat"><div class="stat-label">HAYATINA DOKUNULAN</div><div class="stat-val" style="color:#3498db" id="totalDonors">2.524</div></div>
+    <div class="stat"><div class="stat-label">AKTİF KAMPANYA</div><div class="stat-val" style="color:#e67e22" id="activeCamp">3</div></div>
+  </div>
+
+  <div class="campaigns" id="campaigns"></div>
+</div>
+
+<div class="modal-bg" id="donateModal">
+  <div class="modal">
+    <button class="btn-close" onclick="closeModal('donateModal')">✕</button>
+    <div id="donateContent"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="shareModal">
+  <div class="modal">
+    <button class="btn-close" onclick="closeModal('shareModal')">✕</button>
+    <div class="modal-title">Hayatına Dokun 🤲</div>
+    <div class="modal-sub">Bu linki paylaşarak sen de bir el oluyorsun.</div>
+    <div class="ref-link" id="shareLink"></div>
+    <br>
+    <button class="btn-pay" onclick="copyLink()">Linki Kopyala</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="newModal">
+  <div class="modal">
+    <button class="btn-close" onclick="closeModal('newModal')">✕</button>
+    <div class="modal-title">Kampanya Aç</div>
+    <div class="modal-sub">Belgeler incelendikten sonra kampanyanız yayına girer.</div>
+    <div class="new-form">
+      <label>Ad Soyad</label>
+      <input type="text" placeholder="Ahmet Yilmaz" id="f_name">
+      <label>Telefon</label>
+      <input type="tel" placeholder="+90 555 000 00 00" id="f_phone">
+      <label>E-posta</label>
+      <input type="email" placeholder="ornek@mail.com" id="f_email">
+      <label>Kampanya Başlığı</label>
+      <input type="text" placeholder="Ameliyat fatura desteği" id="f_title">
+      <label>Açıklama</label>
+      <textarea rows="3" placeholder="Durumunuzu kısaca anlatın..." id="f_desc"></textarea>
+      <label>Hedef Tutar (₺)</label>
+      <input type="number" placeholder="15000" id="f_target">
+      <label>Hastane / Klinik</label>
+      <input type="text" placeholder="Medipol Hastanesi" id="f_hospital">
+      <label>IBAN</label>
+      <input type="text" placeholder="TR12 0006..." id="f_iban">
+      <label>Fatura / Dekont / Hastane Kaydı (Zorunlu)</label>
+      <div class="file-upload" onclick="document.getElementById('f_file').click()">
+        📎 Belge yüklemek için dokunun<br>
+        <span style="font-size:11px">(PDF, JPG, PNG)</span>
+        <input type="file" id="f_file" style="display:none" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+      <div class="inceleme-note">
+        📋 Yüklediğiniz belgeler ekibimiz tarafından incelenir. Sizi arayarak teyit aldıktan sonra kampanyanız yayına girer.
+      </div>
+      <button class="btn-pay" onclick="submitNew()">Başvuruyu Gönder</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const campaigns=[
+  {id:1,name:"Mehmet Yilmaz",title:"Diz ameliyati faturasi",desc:"Is kazasi sonucu acil diz ameliyati. Sigorta kapsamiyor.",target:15000,raised:9840,donors:984,chain:6,hospital:"Medipol Hastanesi",avatar:"MY",verified:true,days:4},
+  {id:2,name:"Ayse Kara",title:"Kemoterapi 2. tur",desc:"Meme kanseri teshisi konuldu. Maddi olarak tukendim.",target:28000,raised:11200,donors:1120,chain:4,hospital:"Acibadem Kadikoy",avatar:"AK",verified:true,days:11},
+  {id:3,name:"Kemal Demir",title:"Kalp kapagi ameliyati",desc:"Acil kalp kapagi ameliyati gerekiyor. Emekli maasum yetmiyor.",target:42000,raised:4200,donors:420,chain:2,hospital:"Kartal Egitim Arastirma",avatar:"KD",verified:false,days:18}
+];
+let selectedAmount=10,currentCampaign=null;
+
+function fmt(n){return '₺'+n.toLocaleString('tr-TR');}
+
+function chainNodes(d){
+  let h='';const n=Math.min(d,8);
+  for(let i=0;i<n;i++){
+    const s=i===0?11:8;const c=i===0?'#e74c3c':'#2c3e50';const op=0.4+(i/n)*0.6;
+    h+=`<div class="chain-node" style="width:${s}px;height:${s}px;background:${c};opacity:${op}"></div>`;
+    if(i<n-1)h+=`<div style="width:8px;height:1.5px;background:#2a2a2a"></div>`;
+  }
+  return h;
+}
+
+function renderCampaigns(){
+  document.getElementById('campaigns').innerHTML=campaigns.map(c=>{
+    const pct=Math.round(c.raised/c.target*100);
+    const bc=pct>=80?'#e74c3c':pct>=40?'#3498db':'#f39c12';
+    return `<div class="card">
+      <div class="card-header">
+        <div class="avatar">${c.avatar}</div>
+        <div style="flex:1">
+          <div><span class="card-name">${c.name}</span>${c.verified?'<span class="verified">Belge Onaylı</span>':''}</div>
+          <div class="hospital">${c.hospital}</div>
+        </div>
+        <div class="${c.days<=5?'days-urgent':'days-ok'}">${c.days}g kaldı</div>
+      </div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-stats">
+        <div class="cs"><div class="cs-label">TOPLANAN</div><div class="cs-val" style="color:#e74c3c">${fmt(c.raised)}</div></div>
+        <div class="cs"><div class="cs-label">KALAN</div><div class="cs-val" style="color:#f39c12">${fmt(c.target-c.raised)}</div></div>
+        <div class="cs"><div class="cs-label">EL UZATAN</div><div class="cs-val" style="color:#3498db">${c.donors.toLocaleString('tr-TR')}</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-top"><span style="color:#555;font-size:12px">Hedef: ${fmt(c.target)}</span><strong style="color:#fff;font-size:13px">%${pct}</strong></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${bc}88,${bc})"></div></div>
+      </div>
+      <div class="chain-box">
+        <div><div style="color:#555;font-size:10px;margin-bottom:5px">UZANAN ELLER</div><div class="chain-nodes">${chainNodes(c.chain)}</div></div>
+        <div style="text-align:right"><div style="color:#e74c3c;font-weight:700;font-size:13px">${c.chain}. el uzandı</div><div style="color:#555;font-size:11px">zincir büyüyor</div></div>
+      </div>
+      <div class="card-btns">
+        <button class="btn-donate" onclick="openDonate(${c.id})">🤲 Bir El Uzat</button>
+        <button class="btn-share" onclick="openShare(${c.id})">Hayatına Dokun</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDonate(id){
+  currentCampaign=campaigns.find(c=>c.id===id);
+  selectedAmount=10;renderDonate();
+  document.getElementById('donateModal').classList.add('open');
+}
+
+function renderDonate(){
+  const c=currentCampaign;
+  document.getElementById('donateContent').innerHTML=`
+    <div class="modal-title">🤲 Bir El Uzat</div>
+    <div class="modal-sub">${c.name} — ${c.title}</div>
+    <div class="amounts">
+      ${[5,10,25,50,100].map(a=>`<button class="amt-btn ${selectedAmount===a?'active':''}" onclick="setAmount(${a})">${a} ₺</button>`).join('')}
+    </div>
+    <div class="split-box">
+      <div class="split-row"><span style="color:#8ba0b5">${c.name} için ayrılan</span><span style="color:#e74c3c;font-weight:700">${(selectedAmount*0.95).toFixed(2)} ₺</span></div>
+      <div class="split-divider"></div>
+      <div class="split-total"><span>Toplam</span><span>${selectedAmount.toFixed(2)} ₺</span></div>
+    </div>
+    <div class="escrow-note">🔒 Paran doğrudan ${c.name} için bekletilir. Hedef tutara ulaşınca kendisine aktarılır.</div>
+    <button class="btn-pay" onclick="completeDonate()">Elimi Uzatıyorum</button>
+  `;
+}
+
+function setAmount(a){selectedAmount=a;renderDonate();}
+
+function completeDonate(){
+  const c=currentCampaign;
+  const share=+(selectedAmount*0.95).toFixed(2);
+  c.raised=Math.min(c.raised+share,c.target);
+  c.donors+=1;c.chain+=1;
+  updateStats();renderCampaigns();
+  document.getElementById('donateContent').innerHTML=`
+    <div style="text-align:center">
+      <div style="font-size:52px;margin-bottom:10px">🤲</div>
+      <div class="modal-title" style="margin-bottom:8px">Elini uzattın.</div>
+      <p style="color:#8ba0b5;font-size:14px;margin-bottom:6px;line-height:1.7">Yaptığın iyiliği unut.<br><strong style="color:#fff">O asla unutmayacak.</strong></p>
+      <div class="ref-box" style="margin-top:20px">
+        <div style="color:#555;font-size:12px;margin-bottom:4px">Bir el de sen uzat — paylaş:</div>
+        <div class="ref-link">ulas.app/k/${c.id}?ref=${Math.random().toString(36).substring(2,8).toUpperCase()}</div>
+      </div>
+      <button class="btn-pay" onclick="closeModal('donateModal')">Kapat</button>
+    </div>
+  `;
+}
+
+function openShare(id){
+  const c=campaigns.find(x=>x.id===id);
+  document.getElementById('shareLink').textContent='ulas.app/k/'+c.id+'?ref=DEMO123';
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function openNew(){document.getElementById('newModal').classList.add('open');}
+
+function submitNew(){
+  const name=document.getElementById('f_name').value;
+  const phone=document.getElementById('f_phone').value;
+  if(!name||!phone){showToast('Ad ve telefon zorunlu!');return;}
+  closeModal('newModal');
+  showToast('Başvurunuz alındı! Sizi arayarak teyit edeceğiz.');
+}
+
+function copyLink(){showToast('Link kopyalandı! Bir el de sen uzat.');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function updateStats(){
+  const tr=campaigns.reduce((a,c)=>a+c.raised,0);
+  const td=campaigns.reduce((a,c)=>a+c.donors,0);
+  document.getElementById('totalRaised').textContent=fmt(tr);
+  document.getElementById('totalDonors').textContent=td.toLocaleString('tr-TR');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+renderCampaigns();
+</script>
+</body>
+</html>
